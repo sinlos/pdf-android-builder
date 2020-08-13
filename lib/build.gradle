@@ -44,8 +44,8 @@ bintray {
 
     pkg {
         repo = 'maven'
-        name = project.name
-        userOrg = 'sinlos'
+        name = 'pdf-android-builder'
+        userOrg = 'chebur'
         licenses = ['Apache-2.0']
         desc = 'change this'
         websiteUrl = "https://change.this"
