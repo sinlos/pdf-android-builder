@@ -9,7 +9,7 @@ publishing {
 
     publications {
         Production(MavenPublication) {
-            artifact("$buildDir/outputs/aar/libs-release.aar")
+            artifact("$buildDir/outputs/aar/lib-release.aar")
             groupId 'ru.rcme'
             artifactId 'pdf-android-builder'
             version 'v0.9.0'
