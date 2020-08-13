@@ -43,9 +43,9 @@ bintray {
     publish = true
 
     pkg {
-        repo = 'pdf-android-builder'
+        repo = 'maven'
         name = project.name
-        userOrg = 'rcme'
+        userOrg = 'sinlos'
         licenses = ['Apache-2.0']
         desc = 'change this'
         websiteUrl = "https://change.this"
