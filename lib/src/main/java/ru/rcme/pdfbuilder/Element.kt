@@ -1,14 +1,14 @@
 package ru.rcme.pdfbuilder
 
 
-import ru.rcme.pdfbuilder.style.Alignment
-import ru.rcme.pdfbuilder.style.Border
-import ru.rcme.pdfbuilder.style.Margin
-import ru.rcme.pdfbuilder.style.Padding
 import com.tom_roush.harmony.awt.AWTColor
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.font.PDFont
 import com.tom_roush.pdfbox.pdmodel.font.PDType1Font
+import ru.rcme.pdfbuilder.style.Alignment
+import ru.rcme.pdfbuilder.style.Border
+import ru.rcme.pdfbuilder.style.Margin
+import ru.rcme.pdfbuilder.style.Padding
 
 /**
  * Everything belonging to a [Document] extends from [Element], including
@@ -70,8 +70,8 @@ abstract class Element(open val parent: Element?) {
         }
     }
 
-    internal val inheritedBackgroundColor: AWTColor by lazy {
-        backgroundColor ?: parent?.inheritedBackgroundColor ?: FALLBACK_BACKGROUND_COLOR
+    internal val inheritedBackgroundColor: AWTColor? by lazy {
+        backgroundColor ?: parent?.inheritedBackgroundColor
     }
 
     internal val inheritedFontColor: AWTColor by lazy {
@@ -103,8 +103,8 @@ abstract class Element(open val parent: Element?) {
     fun height(width: Float, startY: Float, minHeight: Float = 0f): Float {
         if (cachedInstanceHeight == null || cachedInstanceHeightStartY != startY) {
             cachedInstanceHeight = instanceHeight(
-                width = width - margin.left - margin.right - padding.left - padding.right,
-                startY = startY + margin.top + padding.top
+                    width = width - margin.left - margin.right - padding.left - padding.right,
+                    startY = startY + margin.top + padding.top
             )
             cachedInstanceHeightStartY = startY
         }
@@ -122,55 +122,50 @@ abstract class Element(open val parent: Element?) {
      * (ie: [TableElement]) must handle paging themselves.
      */
     open fun render(
-        pdDocument: PDDocument,
-        startX: Float,
-        endX: Float,
-        startY: Float,
-        minHeight: Float = 0f
+            pdDocument: PDDocument,
+            startX: Float,
+            endX: Float,
+            startY: Float,
+            minHeight: Float = 0f
     ) {
-        renderInstance(
-            pdDocument,
-            startX = startX + margin.left + padding.left,
-            endX = endX - margin.right - padding.right,
-            startY = startY + margin.top + padding.top,
-            minHeight = minHeight
-        )
-
         val height = instanceHeight(
-            width = endX - startX - margin.left - margin.right - padding.left - padding.right,
-            startY = startY + margin.top + padding.top
+                width = endX - startX - margin.left - margin.right - padding.left - padding.right,
+                startY = startY + margin.top + padding.top
         )
-
+        renderInstance(
+                pdDocument,
+                startX = startX + margin.left + padding.left,
+                endX = endX - margin.right - padding.right,
+                startY = startY + margin.top + padding.top,
+                minHeight = minHeight
+        )
         border.drawBorder(
-            document,
-            pdDocument,
-            startX = startX + margin.left,
-            endX = endX - margin.right,
-            startY = startY + margin.top,
-            endY = startY + margin.top + minHeight.coerceAtLeast(padding.top + height + padding.bottom)
+                document,
+                pdDocument,
+                startX = startX + margin.left,
+                endX = endX - margin.right,
+                startY = startY + margin.top,
+                endY = startY + margin.top + minHeight.coerceAtLeast(padding.top + height + padding.bottom)
         )
-/*
         drawBox(
-            document,
-            pdDocument,
-            startX = startX + margin.left,
-            endX = endX - margin.right,
-            startY = startY + margin.top,
-            endY = startY + margin.top + minHeight.coerceAtLeast(padding.top + height + padding.bottom),
-            color = inheritedBackgroundColor
-        )
-*/
+                document,
+                pdDocument,
+                startX = startX + margin.left,
+                endX = endX - margin.right,
+                startY = startY + margin.top,
+                endY = startY + margin.top + minHeight.coerceAtLeast(padding.top + height + padding.bottom),
+                color = inheritedBackgroundColor)
     }
 
     /**
      * Renders the innermost element, excluding margins, padding, borders, and background.
      */
     abstract fun renderInstance(
-        pdDocument: PDDocument,
-        startX: Float,
-        endX: Float,
-        startY: Float,
-        minHeight: Float = 0f
+            pdDocument: PDDocument,
+            startX: Float,
+            endX: Float,
+            startY: Float,
+            minHeight: Float = 0f
     )
 
 }

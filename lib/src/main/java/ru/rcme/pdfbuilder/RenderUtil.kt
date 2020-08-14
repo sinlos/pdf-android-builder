@@ -49,7 +49,7 @@ fun drawBox(
     endX: Float,
     startY: Float,
     endY: Float,
-    color: AWTColor
+    color: AWTColor?
 ) {
     val width = endX - startX
     val height = endY - startY
