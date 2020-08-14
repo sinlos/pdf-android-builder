@@ -13,7 +13,6 @@ task androidSourcesJar(type: Jar) {
 publishing {
     publications {
         Production(MavenPublication) {
-            artifact androidSourcesJar
             artifact("$buildDir/outputs/aar/lib-release.aar")
             groupId 'ru.rcme'
             artifactId 'pdf-android-builder'
@@ -33,7 +32,26 @@ publishing {
                 }
             }
         }
+        Source(MavenPublication) {
+            artifact androidSourcesJar
+            groupId 'ru.rcme'
+            artifactId 'pdf-android-builder'
+            version 'v0.9.0'
 
+            //The publication doesn't know about our dependencies, so we have to manually add them to the pom
+            pom.withXml {
+                //def dependenciesNode = asNode().appendNode('dependencies')
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if (it.name != 'unspecified') {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -56,14 +74,15 @@ bintray {
         websiteUrl = "https://change.this"
         issueTrackerUrl = 'https://change.this'
         vcsUrl = 'https://github.com/change.this.git'
+        released = new Date()
 
         version {
-            name = 'v0.9.0' //Bintray logical version name
-            vcsTag = 'v0.9.0'
+            name = 'v0.9.1' //Bintray logical version name
+            vcsTag = 'v0.9.1'
         }
     }
 
-    publications = ['Production']
+    publications = ['Production', 'Source']
 }
 
 android {
